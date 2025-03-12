@@ -1,0 +1,926 @@
+{
+	"info": {
+		"_postman_id": "a152812c-bdec-4007-955e-d7be076b7e67",
+		"name": "Trello Automation_script kk",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34647003"
+	},
+	"item": [
+		{
+			"name": "Create Board",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let currentIteration = pm.info.iteration;\r",
+							"let totalIterations = pm.info.iterationCount;\r",
+							"\r",
+							"console.log(\"Current Iteration \" , currentIteration);\r",
+							"console.log(\"Total Iterations: \", totalIterations);\r",
+							"\r",
+							"let namesOfBoard = pm.iterationData.get(\"boardname\");\r",
+							"console.log(\"Using boardname:\", namesOfBoard);\r",
+							"\r",
+							"pm.collectionVariables.set(\"boardName\", namesOfBoard);\r",
+							"pm.collectionVariables.set(\"testVbl\",totalIterations);\r",
+							"\r",
+							"// values for token & key\r",
+							"let tkn = \"Add token\";\r",
+							"let key = \"Add key\";\r",
+							"\r",
+							"// Set token & key\r",
+							"if (currentIteration == 4) {\r",
+							"    pm.collectionVariables.set(\"token\", \"\");\r",
+							"} else if (currentIteration == 5) {\r",
+							"    pm.collectionVariables.set(\"token\", key);\r",
+							"} else {\r",
+							"    pm.collectionVariables.set(\"token\", tkn);\r",
+							"}\r",
+							"\r",
+							"if (currentIteration == 6) {\r",
+							"    pm.collectionVariables.set(\"Key\", \"dfsfsdfg\");\r",
+							"} else if (currentIteration == 7) {\r",
+							"    pm.collectionVariables.set(\"Key\", tkn);\r",
+							"} else {\r",
+							"    pm.collectionVariables.set(\"Key\", key);\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let currentIteration = pm.info.iteration;\r",
+							"\r",
+							"console.log(\"post number - \" ,currentIteration )\r",
+							"\r",
+							"var results = \r",
+							"[\r",
+							"{description : \"Check with correct data\" , expectedResult : 200},\r",
+							"{description : \"Check with correct data\" , expectedResult : 200},\r",
+							"{description :\"Test without board name\" , expectedResult : 400},\r",
+							"{description :\"Test with only space in board name\" , expectedResult : 400},\r",
+							"{description : \"Check Without token\" , expectedResult : 401},\r",
+							"{description : \"Check with entering key in token\" , expectedResult : 401},\r",
+							"{description : \"Check with invalid key\" , expectedResult : 401},\r",
+							"{description : \"Check adding token in key\" , expectedResult : 401}\r",
+							"]\r",
+							"\r",
+							"\r",
+							"console.log(\"before if ---------\");\r",
+							"if (currentIteration == 0) {\r",
+							"    let boardid = pm.response.json().id;\r",
+							"    pm.collectionVariables.set(\"boardid\", boardid);\r",
+							"    pm.collectionVariables.set(\"boardid2\", boardid);\r",
+							"      pm.test(results[currentIteration].description,function(){\r",
+							"        pm.response.to.have.status(results[currentIteration].expectedResult);\r",
+							"    });\r",
+							"    console.log(\"after if ---------\");\r",
+							"}else{\r",
+							"    pm.test(results[currentIteration].description,function(){\r",
+							"        pm.response.to.have.status(results[currentIteration].expectedResult);\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"\r",
+							"if (currentIteration < 7) {\r",
+							"    pm.execution.setNextRequest(null); \r",
+							"} else {\r",
+							"    pm.collectionVariables.set(\"Key\", \"Add key\");\r",
+							" //   pm.collectionVariables.set(\"iter\",0);\r",
+							"    pm.execution.setNextRequest(\"Get Board\"); \r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{urld}}/1/boards/?name={{boardName}}&key={{Key}}&token={{token}}",
+					"host": [
+						"{{urld}}"
+					],
+					"path": [
+						"1",
+						"boards",
+						""
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "{{boardName}}"
+						},
+						{
+							"key": "key",
+							"value": "{{Key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Board",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let  iter = pm.collectionVariables.get(\"iter\") ;\r",
+							"\r",
+							"// board id in sbid variable\r",
+							"var sbid = pm.collectionVariables.get(\"boardid\");\r",
+							"\r",
+							"console.log(iter);\r",
+							"console.log(sbid);\r",
+							"if(iter==0){\r",
+							"    // store real boardid in collection variable to reasign in boardid after all tesrt\r",
+							"pm.collectionVariables.set(\"temp\",sbid);\r",
+							"}\r",
+							" // array of diffrent id of board\r",
+							"let ids = [sbid,sbid,sbid,sbid,sbid,sbid,sbid,\"ghghghghgh\",\"\" , \" \"];\r",
+							"\r",
+							"\r",
+							"let bId = ids[iter];\r",
+							"console.log(iter);\r",
+							"console.log(ids[iter]);\r",
+							"\r",
+							"pm.collectionVariables.set(\"boardid\",bId);\r",
+							"\r",
+							"let tkn = \"Add token\";\r",
+							"let key = \"Add key\";\r",
+							"\r",
+							"if (iter == 1) {\r",
+							"    pm.collectionVariables.set(\"token\", \"dfdffdfdfdfdf\");\r",
+							"} else if (iter == 2 ) {\r",
+							"    pm.collectionVariables.set(\"token\", \"\");\r",
+							"} else if (iter == 3){\r",
+							"     pm.collectionVariables.set(\"token\", key);\r",
+							"} else {\r",
+							"    pm.collectionVariables.set(\"token\", tkn);\r",
+							"}\r",
+							"\r",
+							"if (iter == 4) {\r",
+							"    pm.collectionVariables.set(\"Key\", \"dfdffdfdfdfdf\");\r",
+							"} else if (iter == 5 ) {\r",
+							"    pm.collectionVariables.set(\"Key\", \"\");\r",
+							"} else if (iter == 6){\r",
+							"     pm.collectionVariables.set(\"Key\", tkn);\r",
+							"} else {\r",
+							"    pm.collectionVariables.set(\"Key\", key);\r",
+							"}\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let itn = pm.collectionVariables.get(\"iter\");\r",
+							"\r",
+							"\r",
+							"\r",
+							"if(itn==0){\r",
+							"    pm.test(\"with correct board id\",function(){\r",
+							"        pm.response.to.have.status(200);\r",
+							"    })\r",
+							"}\r",
+							"else if(itn==1 ){\r",
+							"    pm.test(\"check with invalid token\" , function (){\r",
+							"        pm.response.to.have.status(401);\r",
+							"    })\r",
+							"}\r",
+							"else if(itn==2 ){\r",
+							"    pm.test(\"check without token\" , function (){\r",
+							"        pm.response.to.have.status(401);\r",
+							"    })\r",
+							"}\r",
+							"else if(itn==3 ){\r",
+							"    pm.test(\"check with key in token\" , function (){\r",
+							"        pm.response.to.have.status(401);\r",
+							"    })\r",
+							"}\r",
+							"else if(itn==4 ){\r",
+							"    pm.test(\"check with invalid key\" , function (){\r",
+							"        pm.response.to.have.status(401);\r",
+							"    })\r",
+							"}\r",
+							"else if(itn==5 ){\r",
+							"    pm.test(\"check without key\" , function (){\r",
+							"        pm.response.to.have.status(401);\r",
+							"    })\r",
+							"}\r",
+							"else if(itn==6 ){\r",
+							"    pm.test(\"check with token in key\" , function (){\r",
+							"        pm.response.to.have.status(401);\r",
+							"    })\r",
+							"}\r",
+							"else if(itn==7){\r",
+							"    pm.test(\"check with invalid board name\" , function (){\r",
+							"        pm.response.to.have.status(400);\r",
+							"    })\r",
+							"}\r",
+							"else if(itn==8){\r",
+							"    pm.test(\"check without board name\" , function (){\r",
+							"        pm.response.to.have.status(404);\r",
+							"    })\r",
+							"}\r",
+							"else if(itn==9){\r",
+							"    pm.test(\"check with only space in board name\" , function (){\r",
+							"        pm.response.to.have.status(400);\r",
+							"    })\r",
+							"}\r",
+							"else {\r",
+							"    pm.test(\"with invalid api and onvalid key----------\",function(){\r",
+							"        pm.response.to.have.status(400);\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"\r",
+							"pm.collectionVariables.set(\"iter\", ++itn);\r",
+							"\r",
+							"\r",
+							"if (itn < 11) {\r",
+							"    pm.execution.setNextRequest(\"Get Board\");\r",
+							"} else {\r",
+							"    pm.collectionVariables.set(\"iter\",0)\r",
+							"    pm.collectionVariables.set(\"Key\" , \"add key\");\r",
+							"   pm.collectionVariables.set(\"token\",\"add token\");\r",
+							"   //set board id again as real \r",
+							"   var id = pm.collectionVariables.get(\"temp\")\r",
+							"   pm.collectionVariables.set(\"boardid\",id);\r",
+							"   pm.execution.setNextRequest(\"Create todo list\"); \r",
+							"}\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{urld}}/1/boards/:id/?key={{Key}}&token={{token}}",
+					"host": [
+						"{{urld}}"
+					],
+					"path": [
+						"1",
+						"boards",
+						":id",
+						""
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{Key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{boardid}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create todo list",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let  iter = pm.collectionVariables.get(\"iter\") ;\r",
+							"\r",
+							"const bid = pm.collectionVariables.get(\"boardid\");\r",
+							"\r",
+							"// To set board id again storing board id in \"kbid\" collection veriabel \r",
+							"if(iter==0){\r",
+							"pm.collectionVariables.set(\"temp\",bid);\r",
+							"}\r",
+							"\r",
+							"// these array representing diffrent id of board\r",
+							"let  bids= [bid,bid,bid,bid,bid,bid,bid,bid,bid,bid,\"\",\"fdsfsdfsdf\",\"      \"];\r",
+							" \r",
+							"// these array representing diffrent list names \r",
+							" let nami = [\"TODO\",\"DONE\",\"\",\"    \",\"intoken\",\"withouttoken\",\"keyintoken\",\"invalid key\", \"withoutkey\",\"token in key,notbordid , invalidboardid, onlyspaceinbid\"]\r",
+							"\r",
+							"let listBoard = bids[iter];\r",
+							" let listName = nami[iter];\r",
+							"\r",
+							"\r",
+							"\r",
+							"pm.collectionVariables.set(\"boardid\",listBoard);\r",
+							"pm.collectionVariables.set(\"name\",listName)\r",
+							"\r",
+							"\r",
+							"let tkn = \"Add token\";\r",
+							"let key = \"Add key\";\r",
+							"\r",
+							"if (iter == 4) {\r",
+							"    pm.collectionVariables.set(\"token\", \"dfdffdfdfdfdf\");\r",
+							"} else if (iter == 5 ) {\r",
+							"    pm.collectionVariables.set(\"token\", \"\");\r",
+							"} else if (iter == 6){\r",
+							"     pm.collectionVariables.set(\"token\", key);\r",
+							"} else {\r",
+							"    pm.collectionVariables.set(\"token\", tkn);\r",
+							"}\r",
+							"\r",
+							"if (iter == 7) {\r",
+							"    pm.collectionVariables.set(\"Key\", \"dfdffdfdfdfdf\");\r",
+							"} else if (iter == 8 ) {\r",
+							"    pm.collectionVariables.set(\"Key\", \"\");\r",
+							"} else if (iter == 9){\r",
+							"     pm.collectionVariables.set(\"Key\", tkn);\r",
+							"} else {\r",
+							"    pm.collectionVariables.set(\"Key\", key);\r",
+							"}\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let  iter = pm.collectionVariables.get(\"iter\") ;\r",
+							"\r",
+							"\r",
+							"if(iter==0){\r",
+							"   pm.test(\"with correct board id & name\",function(){\r",
+							"        pm.response.to.have.status(200);\r",
+							"\r",
+							"    })\r",
+							"    let listid = pm.response.json();\r",
+							"    var lid = listid.id;\r",
+							"    pm.collectionVariables.set(\"listid\" , lid);\r",
+							" \r",
+							"\r",
+							"}\r",
+							"\r",
+							"else if(iter==1){\r",
+							"     pm.test(\"with correct board id & name\",function(){\r",
+							"        pm.response.to.have.status(200);\r",
+							"\r",
+							"    })\r",
+							"    let listid = pm.response.json();\r",
+							"    var lid = listid.id;\r",
+							"    pm.collectionVariables.set(\"listid2\" , lid);\r",
+							"}\r",
+							"else if(iter==2){\r",
+							"     pm.test(\"check without name\" , function (){\r",
+							"        pm.response.to.have.status(400);\r",
+							"     })   \r",
+							"}\r",
+							"else if(iter==3){\r",
+							"    pm.test(\"with only space in name\" , function (){\r",
+							"        pm.response.to.have.status(400);\r",
+							"    }) \r",
+							"}\r",
+							"\r",
+							"else if(iter==4){\r",
+							"    pm.test(\"check with invalid token\" , function (){\r",
+							"        pm.response.to.have.status(401);\r",
+							"    })\r",
+							"}\r",
+							"else if(iter==5){\r",
+							"    pm.test(\"check without token\" , function (){\r",
+							"        pm.response.to.have.status(401);\r",
+							"    })\r",
+							"}\r",
+							"else if(iter==6){\r",
+							"    pm.test(\"check with key in token\" , function (){\r",
+							"        pm.response.to.have.status(401);\r",
+							"    })\r",
+							"}\r",
+							"else if(iter==7){\r",
+							"    pm.test(\"check with invalid key\" , function (){\r",
+							"        pm.response.to.have.status(401);\r",
+							"    })\r",
+							"}\r",
+							"else if(iter==8){\r",
+							"    pm.test(\"check without key\" , function (){\r",
+							"        pm.response.to.have.status(401);\r",
+							"    })\r",
+							"}\r",
+							"else if(iter==9){\r",
+							"    pm.test(\"check with token in key\" , function (){\r",
+							"        pm.response.to.have.status(401);\r",
+							"    })\r",
+							"}\r",
+							"\r",
+							"else if(iter==10){\r",
+							"   pm.test(\"without board id\" , function (){\r",
+							"        pm.response.to.have.status(400);\r",
+							"    })\r",
+							"}\r",
+							"else if(iter==11){\r",
+							"    pm.test(\"with non existing board id\" , function (){\r",
+							"        pm.response.to.have.status(400);\r",
+							"    })\r",
+							"}\r",
+							"else{\r",
+							"    pm.test(\"with space in board id\",function(){\r",
+							"        pm.response.to.have.status(400);\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"pm.collectionVariables.set(\"iter\", ++iter);\r",
+							"\r",
+							"if (iter < 13) {\r",
+							"    pm.execution.setNextRequest(\"Create todo list\");\r",
+							"} else {\r",
+							"    pm.collectionVariables.set(\"iter\",0)\r",
+							"    var rbid = pm.collectionVariables.get(\"temp\");\r",
+							"    pm.collectionVariables.set(\"boardid\",rbid);\r",
+							"    pm.collectionVariables.set(\"Key\" , \"Add key\");\r",
+							"   pm.collectionVariables.set(\"token\",\"Add token\");\r",
+							"    pm.execution.setNextRequest(\"Create card\");\r",
+							"}\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{urld}}/1/lists/?name={{name}}&idBoard={{boardid}}&key={{Key}}&token={{token}}",
+					"host": [
+						"{{urld}}"
+					],
+					"path": [
+						"1",
+						"lists",
+						""
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "{{name}}"
+						},
+						{
+							"key": "idBoard",
+							"value": "{{boardid}}"
+						},
+						{
+							"key": "key",
+							"value": "{{Key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create card",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let iter = pm.collectionVariables.get(\"iter\");\r",
+							"\r",
+							"const lid = pm.collectionVariables.get(\"listid\");\r",
+							"\r",
+							"if(iter==0){\r",
+							"pm.collectionVariables.set(\"temp\",lid);\r",
+							"}\r",
+							"\r",
+							"// these array representing diffrent list id\r",
+							"let listids = [lid ,lid,lid,lid,lid,lid,lid,lid,lid,lid,lid,lid,\"\",\"fdsfsdfsdf\",\"      \",\"@#$%\"];\r",
+							"\r",
+							"//these array representing diffrent list names \r",
+							"let nami = [\"TODO\",\"\",\"    \",\"@#$%\",\"1234\",\"   space\",\"intoken\",\"withouttoken\",\"keyintoken\",\"invalid key\", \"withoutkey\",\"token in key\",\"todo\", \"three\",\"four\",\"five\"]\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"let listOfid = listids[iter];\r",
+							"let caname = nami[iter];\r",
+							"\r",
+							"\r",
+							"pm.collectionVariables.set(\"listid\",listOfid);\r",
+							"pm.collectionVariables.set(\"cardName\",caname);\r",
+							"\r",
+							"console.log(iter);\r",
+							"console.log(listOfid)\r",
+							"console.log(caname);\r",
+							"\r",
+							"\r",
+							"\r",
+							"let tkn = \"Add token\";\r",
+							"let key = \"Add key\";\r",
+							"if (iter == 6) {\r",
+							"    pm.collectionVariables.set(\"token\", \"dfdffdfdfdfdf\");\r",
+							"} else if (iter == 7 ) {\r",
+							"    pm.collectionVariables.set(\"token\", \"\");\r",
+							"} else if (iter == 8){\r",
+							"     pm.collectionVariables.set(\"token\", key);\r",
+							"} else {\r",
+							"    pm.collectionVariables.set(\"token\", tkn);\r",
+							"}\r",
+							"\r",
+							"if (iter == 9) {\r",
+							"    pm.collectionVariables.set(\"Key\", \"dfdffdfdfdfdf\");\r",
+							"} else if (iter == 10 ) {\r",
+							"    pm.collectionVariables.set(\"Key\", \"\");\r",
+							"} else if (iter == 11){\r",
+							"     pm.collectionVariables.set(\"Key\", tkn);\r",
+							"} else {\r",
+							"    pm.collectionVariables.set(\"Key\", key);\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let itn = pm.collectionVariables.get(\"iter\");\r",
+							"\r",
+							"\r",
+							"let results = [\r",
+							"    {description : \"test with correct data\" , expectedResult : 200},\r",
+							"    {description : \"test without list name\" , expectedResult :400},\r",
+							"    {description : \"test with only space in list name\" , expectedResult :400},\r",
+							"    {description : \"test with only spacial char in list name\" , expectedResult :400},\r",
+							"    {description : \"test with only number in list name\" , expectedResult :400},\r",
+							"    {description : \"test with front space with name in list name\" , expectedResult :200},\r",
+							"    {description : \"test with invalid token\" , expectedResult :401},\r",
+							"    {description : \"test without token \" , expectedResult :401},\r",
+							"    {description : \"test with adding key token\" , expectedResult :401},\r",
+							"    {description : \"test with invalid key\" , expectedResult :401},\r",
+							"    {description : \"test without key\" , expectedResult :401},\r",
+							"    {description : \"test with adding token in key\" , expectedResult :401},\r",
+							"    {description : \"test with without list id\" , expectedResult :400},\r",
+							"    {description : \"test with invalid list id\" , expectedResult :400},\r",
+							"    {description : \"test with only space in list id\" , expectedResult :400},\r",
+							"    {description : \"test with only special chars list id\" , expectedResult :400},\r",
+							"]\r",
+							"\r",
+							"\r",
+							"    pm.test(results[itn].description,function(){\r",
+							"        pm.response.to.have.status(results[itn].expectedResult);\r",
+							"        })\r",
+							"if(itn==0){\r",
+							"    let cardid = pm.response.json();\r",
+							"    var cid = cardid.id;\r",
+							"    pm.collectionVariables.set(\"cardid\" , cid);\r",
+							" }\r",
+							"\r",
+							"\r",
+							"pm.collectionVariables.set(\"iter\", ++itn);\r",
+							"\r",
+							"\r",
+							"if (itn < results.length) {\r",
+							"    pm.execution.setNextRequest(\"Create card\");\r",
+							"} else {\r",
+							"    pm.collectionVariables.set(\"iter\",0)\r",
+							"    var temp = pm.collectionVariables.get(\"temp\");\r",
+							"    pm.collectionVariables.set(\"listid\",temp);\r",
+							"    pm.collectionVariables.set(\"Key\" , \"Add key\");\r",
+							"   pm.collectionVariables.set(\"token\",\"Add token\");\r",
+							"    pm.execution.setNextRequest(\"Move Card\");\r",
+							"}\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{urld}}/1/cards/?name={{cardName}}&idList={{listid}}&token={{token}}&key={{Key}}",
+					"host": [
+						"{{urld}}"
+					],
+					"path": [
+						"1",
+						"cards",
+						""
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "{{cardName}}"
+						},
+						{
+							"key": "idList",
+							"value": "{{listid}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "key",
+							"value": "{{Key}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Move Card",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let iter = pm.collectionVariables.get(\"iter\");\r",
+							"\r",
+							"var lid = pm.collectionVariables.get(\"listid2\");\r",
+							"var cid = pm.collectionVariables.get(\"cardid\");\r",
+							"\r",
+							"\r",
+							"if(iter==0){\r",
+							"pm.collectionVariables.set(\"temp\",lid);\r",
+							"pm.collectionVariables.set(\"tempIDlist\",lid);\r",
+							"pm.collectionVariables.set(\"tempCARDlist\",cid);\r",
+							"}\r",
+							"\r",
+							"var lid2 =  pm.collectionVariables.get(\"tempIDlist\");\r",
+							"var cid2 =  pm.collectionVariables.get(\"tempCARDlist\");\r",
+							"\r",
+							"\r",
+							"//  array for diffrent id of list\r",
+							"let listId = [lid ,lid,lid,lid,lid,lid,\"asdasdasd\",\"\",\"    \",\"!@#$\",cid2,lid2,lid2,lid2,lid2,lid2,lid2];\r",
+							"\r",
+							"//  array for diffrent card id \r",
+							"let cardids = [cid,\"fgfgfgfg\",\"\",\"     \",\"!@#$\",lid,cid2,cid2,cid2,cid2,cid2,cid2,cid2,cid2,cid2,cid2,cid2];\r",
+							"\r",
+							"let ltid = listId[iter];\r",
+							"let cardid = cardids[iter];\r",
+							"pm.collectionVariables.set(\"listid\",ltid);\r",
+							"pm.collectionVariables.set(\"cardid\",cardid);\r",
+							"\r",
+							"// console.log(\"  on iteration \" + iter)\r",
+							"// console.log(\"this is getting list id =========  \" + ltid  )\r",
+							"// console.log(\"this is getting card id ---------   \"+ cardid )\r",
+							"\r",
+							"\r",
+							"let tkn = \"Add token\";\r",
+							"let key = \"Add key\";\r",
+							"if (iter == 11) {\r",
+							"    pm.collectionVariables.set(\"token\", \"dfdffdfdfdfdf\");\r",
+							"} else if (iter == 12 ) {\r",
+							"    pm.collectionVariables.set(\"token\", \"\");\r",
+							"} else if (iter == 13){\r",
+							"     pm.collectionVariables.set(\"token\", key);\r",
+							"} else {\r",
+							"    pm.collectionVariables.set(\"token\", tkn);\r",
+							"}\r",
+							"\r",
+							"if (iter == 14) {\r",
+							"    pm.collectionVariables.set(\"Key\", \"dfdffdfdfdfdf\");\r",
+							"} else if (iter == 15 ) {\r",
+							"    pm.collectionVariables.set(\"Key\", \"\");\r",
+							"} else if (iter == 16){\r",
+							"     pm.collectionVariables.set(\"Key\", tkn);\r",
+							"} else {\r",
+							"    pm.collectionVariables.set(\"Key\", key);\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let itn = pm.collectionVariables.get(\"iter\");\r",
+							"\r",
+							"\r",
+							"\r",
+							"let results = [\r",
+							"    {description : \"with correct data\",expectedResult:200},\r",
+							"    {description : \"test with invalid card id\", expectedResult : 400},\r",
+							"    {description : \"test without card id\", expectedResult : 400},\r",
+							"    {description : \"test with only space in card id\", expectedResult : 400},\r",
+							"    {description : \"test with only special char\", expectedResult : 400},\r",
+							"    {description : \"test with add list id in card id\", expectedResult : 400},\r",
+							"    {description : \"teset with invalid list id\", expectedResult : 400},\r",
+							"    {description : \"test without list id\" , expectedResult : 400},\r",
+							"    {description : \"test with only space in list id\", expectedResult : 400},\r",
+							"    {description : \"test with only special chars in list id\", expectedResult : 400},\r",
+							"    {description : \" test with card id in list id\" , expectedResult : 400},\r",
+							"    {description : \"test with invalid token\" , expectedResult :401},\r",
+							"    {description : \"test without token \" , expectedResult :401},\r",
+							"    {description : \"test with adding key token\" , expectedResult :401},\r",
+							"    {description : \"test with invalid key\" , expectedResult :401},\r",
+							"    {description : \"test without key\" , expectedResult :401},\r",
+							"    {description : \"test with adding token in key\" , expectedResult :401}\r",
+							"]; \r",
+							"\r",
+							"pm.test(results[itn].description,function(){\r",
+							"    pm.response.to.have.status(results[itn].expectedResult);\r",
+							"})\r",
+							"\r",
+							"\r",
+							"\r",
+							"pm.collectionVariables.set(\"iter\", ++itn);\r",
+							"\r",
+							"\r",
+							"if (itn < 17) {\r",
+							"    pm.execution.setNextRequest(\"Move Card\");\r",
+							"} else {\r",
+							"    pm.collectionVariables.set(\"iter\",0)\r",
+							"    var temp = pm.collectionVariables.get(\"temp\");\r",
+							"    pm.collectionVariables.set(\"listid\",temp);\r",
+							"    pm.collectionVariables.set(\"Key\" , \"Add key\");\r",
+							"   pm.collectionVariables.set(\"token\",\"Add token\");\r",
+							"    pm.execution.setNextRequest(null);\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{urld}}/1/cards/:id/?idList={{listid}}&key={{Key}}&token={{token}}",
+					"host": [
+						"{{urld}}"
+					],
+					"path": [
+						"1",
+						"cards",
+						":id",
+						""
+					],
+					"query": [
+						{
+							"key": "idList",
+							"value": "{{listid}}"
+						},
+						{
+							"key": "key",
+							"value": "{{Key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{cardid}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "urld",
+			"value": "https://api.trello.com",
+			"type": "string"
+		},
+		{
+			"key": "boardName",
+			"value": ""
+		},
+		{
+			"key": "testVbl",
+			"value": ""
+		},
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "Key",
+			"value": ""
+		},
+		{
+			"key": "boardid",
+			"value": ""
+		},
+		{
+			"key": "boardid2",
+			"value": ""
+		},
+		{
+			"key": "iter",
+			"value": ""
+		},
+		{
+			"key": "temp",
+			"value": ""
+		},
+		{
+			"key": "name",
+			"value": ""
+		},
+		{
+			"key": "listid",
+			"value": ""
+		},
+		{
+			"key": "listid2",
+			"value": ""
+		},
+		{
+			"key": "cardName",
+			"value": ""
+		},
+		{
+			"key": "cardid",
+			"value": ""
+		},
+		{
+			"key": "tempIDlist",
+			"value": ""
+		},
+		{
+			"key": "tempCARDlist",
+			"value": ""
+		}
+	]
+}
